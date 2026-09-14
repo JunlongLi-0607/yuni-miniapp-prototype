@@ -1,0 +1,22 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>原型流程检查</title><body><pre id="result">RUNNING</pre><iframe id="app" src="index.html" width="1280" height="950"></iframe><script>
+const results=[]; const assert=(v,m)=>{if(!v)throw Error(m);results.push('PASS '+m)};
+const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+document.getElementById('app').onload=async()=>{const w=document.getElementById('app').contentWindow;try{
+ w.eval('state=initial();save();');
+ for(const id of ['login','home','course','lesson','capture','record','transfer','processing','notes','edit','transcript','review','exam','results','ai','mine','device']){w.preview(id);assert(w.document.querySelector('#screen').textContent.trim().length>0,'page '+id);const screen=w.document.querySelector('#screen');assert(screen.scrollWidth<=screen.clientWidth+1,'no horizontal overflow '+id)}
+ w.go('home');w.newCourse();assert(w.eval('route')==='login','creation requests login');
+ w.document.querySelector('#agreement').checked=true;w.login();w.completeLogin();assert(!!w.document.querySelector('#course-name'),'login returns to creation');
+ w.document.querySelector('#course-name').value='测试课程';w.createCourse();assert(w.eval('course().name')==='测试课程','create course');
+ w.go('capture');w.startMode('phone');w.eval("recordState='recording';render()");await pause(1100);assert(w.eval('recordSeconds')>=1,'recording timer');
+ w.finishRecording();w.saveRecordingDialog();w.document.querySelector('#lesson-name').value='测试课时';w.addLesson();await pause(4000);assert(w.eval('lesson().ready'),'generation completes');
+ w.go('edit');w.document.querySelector('#note-edit').value='修订后的课堂笔记';w.document.querySelector('#note-mark').checked=true;w.document.querySelector('#note-remark').value='我的备注';w.saveNote();assert(w.document.querySelector('#main-note').textContent.includes('修订后的课堂笔记'),'save note');
+ w.openSource(1);assert(w.eval('playerSeconds')===522&&w.document.querySelectorAll('.transcript')[1].classList.contains('active'),'source timestamp');
+ w.openCourse(0);w.openLesson(0);w.go('notes');assert(!w.document.querySelector('#main-note').textContent.includes('修订后的课堂笔记'),'notes isolated by lesson');
+ w.go('exam');w.eval('question=0');w.chooseAnswer(1);w.eval('question=1');w.chooseAnswer(0);w.chooseAnswer(1);w.eval("study().answers[2]='先复习再练习';study().submitted=true;save()");w.go('results');assert(w.document.querySelector('.score').textContent.includes('2 / 2'),'objective grading');
+ w.go('device');w.bindDevice();assert(w.document.querySelector('#overlay').textContent.includes('YN-001'),'device discovery');w.eval('state.bound=true;save()');w.startMode('hardware');assert(w.document.querySelector('#screen').textContent.includes('模拟按下录音卡按键'),'hardware recording entry');
+ w.eval('transferProgress=0');w.go('transfer');w.startTransfer();await pause(3200);assert(w.eval('transferProgress')===100,'hardware transfer complete');w.startTransfer();assert(!!w.document.querySelector('#lesson-name'),'transfer proceeds to lesson archive');
+ w.go('ai');w.askAI(0);assert(w.document.querySelector('#screen').textContent.includes('来源：课程笔记'),'AI citation link');
+ document.getElementById('app').width='320';await pause(100);for(const id of ['home','notes','edit','exam','device']){w.preview(id);const screen=w.document.querySelector('#screen');assert(screen.scrollWidth<=screen.clientWidth+1&&w.document.documentElement.scrollWidth<=w.innerWidth+1,'320px no overflow '+id)}
+ document.getElementById('result').textContent='ALL PASSED\n'+results.join('\n');
+ }catch(error){document.getElementById('result').textContent='FAILED '+error.message+'\n'+results.join('\n')}
+};</script></body></html>
