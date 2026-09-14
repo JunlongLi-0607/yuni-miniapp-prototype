@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="zh-CN">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>芋泥 · AI课堂笔记｜小程序交互原型</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="v2.css"></head>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>芋泥 · AI课堂笔记｜小程序交互原型</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="v2.css"><link rel="stylesheet" href="v2-fixes.css"></head>
 <body>
 <aside class="sidebar"><a class="brand" href="#home"><span>芋</span> 芋泥 <small>课堂笔记</small></a><div class="version">MINI PROGRAM / PROTOTYPE 01</div><h1>把一堂课，<br>变成自己的知识。</h1><p class="intro">小程序交互原型 · 课程与课时组织<br>录音 → 笔记 → 复习 → 测试</p><nav id="catalog"></nav><button class="reset" onclick="resetDemo()">重置演示数据</button><p class="fine">本地演示，未接入微信、录音硬件或 AI 服务。所有录音与生成操作均为模拟。</p></aside>
 <main class="stage"><div class="stage-label"><span class="live-dot"></span> LIVE PROTOTYPE <span>390 × 844</span></div><section class="phone"><div class="statusbar"><b>9:41</b><span>▮▮▮ &nbsp; ◒ &nbsp; ▰</span></div><div class="appbar"><button id="back" aria-label="返回" onclick="goBack()">‹</button><strong id="page-title">芋泥</strong><div class="capsule">••• <i></i> ◉</div></div><div id="screen"></div><div id="tabbar"></div><div class="home-indicator"></div><div id="overlay"></div><div id="toast" role="status"></div></section><p class="stage-caption">点击屏幕或左侧页面目录体验完整流程</p></main>
