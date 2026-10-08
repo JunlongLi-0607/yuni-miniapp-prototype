@@ -1,0 +1,16 @@
+/* 2.0 页面沿用 1.0 小程序组件尺寸，避免文字挤压与横向溢出 */
+#screen .segmented{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));width:100%;gap:6px;overflow:hidden}
+#screen .segmented button{width:100%!important;max-width:none;min-width:0;padding:9px 3px;font-size:12px;white-space:nowrap}
+#screen .bottom-action{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));width:100%;max-width:100%;gap:9px;margin:18px 0;overflow:hidden}
+#screen .bottom-action button{width:100%!important;max-width:none;min-width:0}
+.process-panel{padding:0 16px!important;margin:12px 0}
+.process-panel .process-row{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line);text-align:left}
+.process-panel .process-row:last-child{border-bottom:0}
+.process-panel .process-row>span{display:grid;place-items:center;width:24px;height:24px;flex:0 0 24px;border-radius:50%;background:#edf2e8;color:#7c907a;font-size:11px}
+.process-panel .process-row.doing>span{background:#dceccf;color:var(--green)}
+.process-panel .process-row.done>span{background:var(--green);color:#fff}
+.process-panel .process-row div{display:flex;flex-direction:column;gap:3px}
+.process-panel .process-row small{color:var(--muted);font-size:11px}
+#screen .checkline{display:flex;justify-content:space-between;align-items:center;gap:8px;min-width:0}
+#screen .checkline span{margin-left:auto;max-width:43%;white-space:nowrap;font-size:11px;overflow:hidden;text-overflow:ellipsis}
+.note-meta{gap:10px}.note-meta>span{min-width:0;font-size:11px}.note-meta .text-btn{white-space:nowrap}
