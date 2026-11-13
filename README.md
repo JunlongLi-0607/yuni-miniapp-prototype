@@ -1,5 +1,11 @@
 # 芋泥小程序高保真交互原型 v3.0
 
+## 在线体验
+
+[点击打开芋泥产品原型](https://junlongli-0607.github.io/yuni-miniapp-prototype/?preview=login#notifications)
+
+公网访问地址与说明见 [PUBLIC-PREVIEW.md](PUBLIC-PREVIEW.md)。
+
 直接用 Chrome 或 Edge 打开同目录的 `index.html`，无需安装依赖。桌面左侧为页面目录，中央为可点击小程序，右侧为当前页面说明。窄屏自动显示为全屏小程序。浏览器本地保存演示数据，左侧可以重置。
 
 `overview.html` 将全部页面并排展示，适合先评审页面框架，再进入单屏走流程。总览用独立示例状态，不改动单屏原型数据。
