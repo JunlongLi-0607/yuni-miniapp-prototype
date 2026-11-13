@@ -1,14 +1,11 @@
 # 公网演示链接
 
-2026-09-14 建立的临时演示入口：
+[打开芋泥产品原型](https://junlongli-0607.github.io/yuni-miniapp-prototype/?preview=login#notifications)
 
-- 交互原型：https://cruz-particles-childrens-click.trycloudflare.com/index.html
-- 页面总览：https://cruz-particles-childrens-click.trycloudflare.com/overview.html
+https://junlongli-0607.github.io/yuni-miniapp-prototype/?preview=login#notifications
 
-无需登录即可访问，不限于同一局域网。只映射本项目 miniapp-prototype 目录对应的本地服务，不分享项目根目录或视频文件。
+此地址由 GitHub Pages 托管，是目前使用的产品原型入口，不依赖本机开机或临时隧道运行。
 
-这是 Cloudflare Quick Tunnel 临时预览，并非独立托管网站。本机需保持开机联网，Python 本地服务器和 cloudflared 后台进程需保持运行；重启隧道可能生成新网址。
+链接中的 `?preview=login#notifications` 保留原有预览参数和页面位置；实际显示页面会根据原型登录状态处理。
 
-建立时验证：index.html、overview.html、app.js、style.css 经公网地址请求均返回 HTTP 200。
-
-使用说明：https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/trycloudflare/
+原文档中的 Cloudflare Quick Tunnel（`trycloudflare.com`）临时地址已停用，请使用上面的 GitHub Pages 地址。
