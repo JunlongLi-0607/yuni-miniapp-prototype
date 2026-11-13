@@ -2,15 +2,17 @@ const $ = s => document.querySelector(s);
 const paths={home:'M3 10 12 3l9 7v10H4V10m5 10v-7h6v7',spark:'m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5Z',user:'M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0M4 21v-2a8 8 0 0 1 16 0v2',mic:'M9 5a3 3 0 0 1 6 0v7a3 3 0 0 1-6 0V5M6 10v2a6 6 0 0 0 12 0v-2M12 18v4m-4 0h8',device:'M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2m3 3h4m-2 12v1',book:'M3 4h7l2 2 2-2h7v15h-7l-2 2-2-2H3V4m9 2v15',search:'M16 10a6 6 0 1 1-12 0 6 6 0 0 1 12 0m-2 5 7 7',upload:'M12 16V3m-5 5 5-5 5 5M4 15v6h16v-6',file:'M6 2h8l5 5v15H6V2m8 0v6h5M9 12h7m-7 4h7',edit:'m4 16 12-12 4 4L8 20H4v-4m10-10 4 4',clock:'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0M12 7v5l3 2',heart:'M12 21 3 12C-3 4 7-1 12 6c5-7 15-2 9 6Z',trash:'M4 7h16M9 7V4h6v3m3 0-1 14H7L6 7m4 4v6m4-6v6'};
 const icon=n=>`<span class="icon"><svg viewBox="0 0 24 24"><path d="${paths[n]||paths.file}"/></svg></span>`;
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const initial=()=>({logged:false,bound:false,course:0,lesson:0,courses:[{name:'宏观经济学',icon:'↗',color:'',lessons:[{name:'第 3 课 · 课程知识与应用',ready:true},{name:'第 2 课 · 核心概念梳理',ready:true},{name:'第 1 课 · 课程导论',ready:true}]},{name:'中国近代史纲要',icon:'册',color:'purple',lessons:[{name:'第 1 课 · 课程导论',ready:true}]},{name:'Python 数据分析',icon:'⌘',color:'peach',lessons:[]}]});
+const demoInitial=()=>({logged:false,bound:false,course:0,lesson:0,courses:[{name:'宏观经济学',icon:'↗',color:'',lessons:[{name:'第 3 课 · 课程知识与应用',ready:true},{name:'第 2 课 · 核心概念梳理',ready:true},{name:'第 1 课 · 课程导论',ready:true}]},{name:'中国近代史纲要',icon:'册',color:'purple',lessons:[{name:'第 1 课 · 课程导论',ready:true}]},{name:'Python 数据分析',icon:'⌘',color:'peach',lessons:[]}]});
+const initial=()=>({logged:false,bound:false,course:0,lesson:0,courses:[]});
+let sampleCourse=null;
 const galleryMode=new URLSearchParams(location.search).has('gallery');
 let state;try{state=JSON.parse(localStorage.getItem('yuni-prototype-v1'))||initial()}catch{state=initial()}
-if(galleryMode)state=initial();
+if(galleryMode)state=demoInitial();
 let pendingLoginAction=null;
 let route='',historyStack=[],noteTab=0,editSource=true,recordState='idle',recordSeconds=0,recordMode='phone',transferProgress=0,processingStep=0,question=0,filter='all',transcriptIndex=0,playerOn=false,playerSeconds=0,chats=[],aiScope='lesson',timer,toastTimer;
 const save=()=>{if(galleryMode)return;try{localStorage.setItem('yuni-prototype-v1',JSON.stringify(state))}catch{}};
-const course=()=>state.courses[state.course]||state.courses[0];
-const lesson=()=>course()?.lessons[state.lesson];
+const course=()=>sampleCourse||state.courses[state.course]||state.courses[0];
+const lesson=()=>sampleCourse ? sampleCourse.lessons[0] : course()?.lessons[state.lesson];
 const freshStudy=()=>({note:'本节课围绕核心概念、知识点之间的联系与典型应用展开。复习时，先理解概念，再结合课堂例子完成练习。',marked:false,remark:'',answers:[null,null,null],submitted:false});
 const emptyStudy=freshStudy();
 if(galleryMode){state.logged=true;state.bound=true;state.courses[0].lessons[0].study={...freshStudy(),answers:[1,[0,1],'回顾知识、完成练习、回看原文。'],submitted:true};}
@@ -104,4 +106,4 @@ function askAI(index){const suggestions=['帮我总结这堂课的三个重点',
 function quotaInfo(){sheet('课堂笔记额度',`<p>视频中的开启确认显示「剩余 29 次，消耗 1 次」。此原型保留次数展示，演示过程中不扣减。</p><p>新增清单的免费额度与后续付费能力待验证，暂未设置价格、套餐或购买流程。</p><button class="primary" onclick="closeSheet()">知道了</button>`)}
 ['review','keypoints','favorites','exam','results'].forEach(id=>{delete pages[id];delete views[id];});
 groups.forEach(group=>{group[1]=group[1].filter(id=>pages[id]);});
-goWithoutHistory(pages[location.hash.slice(1)]?location.hash.slice(1):'home');
+goWithoutHistory(pages[location.hash.slice(1)]?location.hash.slice(1):state.logged?'home':'login');

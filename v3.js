@@ -244,8 +244,7 @@
 
   function openSampleLesson() {
     sampleMode = true;
-    state.course = 0;
-    state.lesson = 0;
+    sampleCourse = demoInitial().courses[0];
     go('lesson');
     toast('当前为只读示例，不会写入你的学习记录');
   }
@@ -754,8 +753,9 @@
   const originalCompleteLogin = completeLogin;
   window.completeLogin = function () {
     if (state.logged) return go('home');
-    originalCompleteLogin();
     sampleMode = false;
+    sampleCourse = null;
+    originalCompleteLogin();
     state.profile = state.profile || { nickname: '小芋同学', avatar: '芋', phone: '' };
     save();
     if (loginPreviewMode) history.replaceState(null, '', `${location.pathname}#home`);
@@ -790,7 +790,7 @@
 
   const originalGo = go;
   window.go = function (target) {
-    if (target !== 'sample' && target !== 'lesson' && sampleMode) sampleMode = false;
+    if (target !== 'sample' && !lessonRoutes.has(target) && sampleMode) { sampleMode = false; sampleCourse = null; }
     if (!v3CanOpenRoute(target)) return;
     originalGo(target);
   };
@@ -814,6 +814,7 @@
   };
 
   v3EnsureRuntimeState();
+  if (!galleryMode && !state.logged && (!window.__yuniInitialHash || window.__yuniInitialHash === 'home')) { route = 'login'; history.replaceState(null, '', `${location.pathname}${location.search}#login`); }
   if (window.__yuniInitialHash === 'myfiles') route = 'myfiles';
   if (state.logged && route === 'login' && !loginPreviewMode) route = 'home';
   render();
