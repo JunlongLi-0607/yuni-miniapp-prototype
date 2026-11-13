@@ -51,3 +51,20 @@
 .note-source-info small{font-size:10px;color:var(--muted)}
 .note-source-view{flex-shrink:0;color:var(--green);font-size:12px;font-weight:600}
 .note-source-file:focus-visible{outline:2px solid var(--green);outline-offset:3px;border-radius:8px}
+
+/* Consistent file library rows and outline icons. */
+.my-files-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:5px;margin:8px 0 18px;background:#e9eee8;border-radius:14px}
+.my-files-tabs button{display:flex;justify-content:center;align-items:center;gap:5px;padding:11px 3px;background:transparent;border-radius:10px;color:var(--muted);font-size:12px}
+.my-files-tabs button.on{background:#fff;color:var(--green);font-weight:600;box-shadow:0 2px 8px #173e3308}
+.my-files-tabs small{font-size:10px;font-weight:400}
+.my-files-list{display:grid;gap:10px}
+.my-file-row{display:flex;align-items:center;gap:11px;width:100%;padding:16px 13px;text-align:left;background:#fff;border:1px solid var(--line);border-radius:16px;color:var(--ink)}
+.my-file-icon{display:grid;place-items:center;width:42px;height:46px;flex:0 0 42px;background:#e8f2eb;border-radius:12px;color:var(--green)}
+.my-file-info{display:grid;gap:5px;flex:1;min-width:0}
+.my-file-info b{font-size:12px;line-height:1.5;overflow-wrap:anywhere}
+.my-file-info small{font-size:10px;color:var(--muted);line-height:1.5;overflow-wrap:anywhere}
+.my-file-open{font-size:11px;color:var(--green);white-space:nowrap}
+.my-files-empty{display:grid;justify-items:center;gap:12px;padding:40px 20px;border:1px dashed var(--line);border-radius:18px}
+.my-files-empty>.icon{width:34px;height:34px;color:var(--green)}
+.my-files-empty b{font-size:16px;color:var(--ink)}
+.my-files-empty p{margin:0;font-size:12px;line-height:1.7}

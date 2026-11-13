@@ -627,7 +627,7 @@
 
   views.processing = () => { const current = lesson(); processingStep = current?.processingStep ?? processingStep; const source = current?.source || '录音卡'; const steps = source === '图片资料' ? ['上传并校验照片','识别图片文字与版面','生成结构化笔记','关联笔记与原图片'] : source === '课件文件' ? ['上传并校验课件','解析页面与文本结构','生成结构化笔记','关联笔记与课件页'] : ['上传并校验音频','识别课堂语音','生成结构化笔记','建立原文索引']; return `<div class="processing-page"><div class="ai-orbit">✦<i></i></div><span class="status-chip">${processingStep < 4 ? '后台处理中' : '整理完成'}</span><h1>${processingStep < 4 ? '正在整理这堂课' : '课堂笔记已生成'}</h1><p>${esc(currentName())}</p><div class="process-card">${steps.map((item, index) => `<div class="process-item ${index < processingStep ? 'done' : index === processingStep ? 'active' : ''}"><span>${index < processingStep ? '✓' : index + 1}</span><div><b>${item}</b><small>${index < processingStep ? '已完成' : index === processingStep ? '处理中…' : '等待中'}</small></div></div>`).join('')}</div><div class="notice-line">你可以离开此页。再次进入时会继续显示这条课时的处理进度。</div><button class="primary wide" ${processingStep < 4 ? 'disabled' : ''} onclick="go('notes')">查看课堂笔记</button><button class="ghost-button wide" onclick="go('home')">返回首页</button></div>`; };
 
-  views.materialsource = () => { const source = lesson()?.source; const files = lesson()?.sourceFiles || [{ name: source === '课件文件' ? '课堂课件.pdf' : '课堂板书_01.jpg' }]; return `<div class="page-intro"><span class="eyebrow-v3">SOURCE MATERIAL</span><h1>课堂资料原文</h1><p>${esc(currentName())} · ${source === '课件文件' ? '课件解析' : '图片 OCR'}</p></div><div class="source-preview"><span>${source === '课件文件' ? '第 06 页' : '照片 1 / ' + files.length}</span><div class="source-paper"><b>核心概念与应用条件</b><i></i><i></i><i class="short"></i><em>${source === '课件文件' ? 'PPT / PDF 页面预览' : '课堂板书照片预览'}</em></div></div><div class="source-extract"><div class="row"><b>识别文字</b><span class="pill">引用来源</span></div><p>本节课先介绍核心概念，再结合课堂案例讨论不同条件下的应用方式。</p><small>AI 识别结果可能有误，请以原始资料为准。</small></div><div class="source-file-list">${files.map((file, index) => `<button><span>${index + 1}</span><b>${esc(file.name)}</b><i>${index === 0 ? '当前' : '查看'}</i></button>`).join('')}</div>`; };
+  views.materialsource = () => { const source = lesson()?.source; const files = lesson()?.sourceFiles || [{ name: source === '课件文件' ? '课堂课件.pdf' : '课堂板书_01.jpg' }]; const activeIndex = materialFileSelection.lessonId === lesson()?.id ? Math.min(materialFileSelection.index, files.length - 1) : 0; return `<div class="page-intro"><span class="eyebrow-v3">SOURCE MATERIAL</span><h1>课堂资料原文</h1><p>${esc(currentName())} · ${source === '课件文件' ? '课件解析' : '图片 OCR'}</p></div><div class="source-preview"><span>${esc(files[activeIndex].name)} · ${activeIndex + 1} / ${files.length}</span><div class="source-paper"><b>核心概念与应用条件</b><i></i><i></i><i class="short"></i><em>${source === '课件文件' ? 'PPT / PDF 页面预览' : '课堂板书照片预览'}</em></div></div><div class="source-extract"><div class="row"><b>识别文字</b><span class="pill">引用来源</span></div><p>本节课先介绍核心概念，再结合课堂案例讨论不同条件下的应用方式。</p><small>AI 识别结果可能有误，请以原始资料为准。</small></div><div class="source-file-list">${files.map((file, index) => `<button onclick="v3SelectMaterialFile(${index})"><span>${index + 1}</span><b>${esc(file.name)}</b><i>${index === activeIndex ? '当前' : '查看'}</i></button>`).join('')}</div>`; };
 
   views.evidence = () => {
     const data = v3EvidenceData();
@@ -687,8 +687,47 @@
 
   views.notifications = () => `<div class="page-intro"><span class="eyebrow-v3">MESSAGES</span><h1>消息中心</h1><p>查看录音回传、笔记生成和设备状态提醒。</p></div><div class="message-list"><button onclick="go('notes')"><span class="message-icon success">✓</span><div><b>课堂笔记已生成</b><p>「第 3 课 · 课程知识与应用」已完成整理</p><small>今天 12:36</small></div><i>›</i></button><button><span class="message-icon">●</span><div><b>录音卡电量充足</b><p>当前电量 86%，可继续使用</p><small>今天 09:20</small></div></button></div>`;
 
+
+  let myFilesFilter = 'all';
+  let materialFileSelection = { lessonId: '', index: 0 };
+  paths.support = 'M4 13v-2a8 8 0 0 1 16 0v2M4 12H2v7h4v-7H4m16 0h2v7h-4v-7h2m0 7v1a2 2 0 0 1-2 2h-4';
+  paths.image = 'M3 3h18v18H3V3m0 14 5-5 4 4 3-3 6 6M8 7h.01';
+  pages.myfiles = ['我的文件', '按录音、图片和课件查看已归档到课程的文件，并打开对应录音或资料。', ['文件归档', '分类浏览'], ['按文件类型筛选', '查看所属课程与课时', '打开录音与转写或课堂资料']];
+  pages.mine[3] = ['查看已上传的文件', '查看设备状态', '查看额度说明', '切换登录状态'];
+  personalRoutes.add('myfiles');
+  groups.forEach(group => { group[1] = group[1].map(id => id === 'about' ? 'myfiles' : id); });
+  function v3MyFiles() {
+    const files = [];
+    state.courses.forEach((c, ci) => c.lessons.forEach((l, li) => {
+      const kind = l.source === '图片资料' ? 'image' : l.source === '课件文件' ? 'document' : 'audio';
+      if (kind === 'audio') {
+        files.push({ ci, li, index: 0, kind, name: l.audioName || l.name + ' · 课堂录音', size: l.audioSize, duration: l.duration, courseName: c.name, lessonName: l.name });
+      } else {
+        (l.sourceFiles || []).forEach((file, index) => files.push({ ci, li, index, kind, name: file.name, size: file.size, courseName: c.name, lessonName: l.name }));
+      }
+    }));
+    return files;
+  }
+  function v3SetMyFilesFilter(value) { myFilesFilter = value; render(); }
+  function v3OpenMyFile(ci, li, index) {
+    state.course = ci; state.lesson = li;
+    const item = lesson();
+    if (!item) return go('myfiles');
+    materialFileSelection = { lessonId: item.id, index };
+    save();
+    go(['图片资料', '课件文件'].includes(item.source) ? 'materialsource' : item.ready ? 'transcript' : item.processingStatus === 'processing' ? 'processing' : 'clip');
+  }
+  function v3SelectMaterialFile(index) { materialFileSelection = { lessonId: lesson()?.id, index }; render(); }
+  Object.assign(window, { v3SetMyFilesFilter, v3OpenMyFile, v3SelectMaterialFile });
+  views.myfiles = () => {
+    const files = v3MyFiles();
+    const visible = files.filter(file => myFilesFilter === 'all' || file.kind === myFilesFilter);
+    const types = [['all','全部'],['audio','录音'],['image','图片'],['document','课件']];
+    return `<div class="page-intro"><span class="eyebrow-v3">MY FILES</span><h1>我的文件</h1><p>已导入并归档到课程的录音、图片和课件。</p></div><div class="my-files-tabs" role="group" aria-label="文件类型">${types.map(([key,label])=>`<button class="${myFilesFilter===key?'on':''}" aria-pressed="${myFilesFilter===key}" onclick="v3SetMyFilesFilter('${key}')">${label}<small>${key==='all'?files.length:files.filter(f=>f.kind===key).length}</small></button>`).join('')}</div><div class="my-files-list">${visible.length ? visible.map(file=>`<button class="my-file-row" onclick="v3OpenMyFile(${file.ci},${file.li},${file.index})"><span class="my-file-icon">${icon(file.kind==='audio'?'mic':file.kind==='image'?'image':'file')}</span><span class="my-file-info"><b>${esc(file.name)}</b><small>${file.size ? fileSize(file.size)+' · ' : ''}${file.kind==='audio'?(file.duration ? esc(file.duration)+' · ' : '')+'音频':file.kind==='image'?'图片':'课件'}</small><small>${esc(file.courseName)} · ${esc(file.lessonName)}</small></span><span class="my-file-open">查看 ›</span></button>`).join('') : `<div class="empty my-files-empty">${icon('folder')}<b>${files.length?'暂无这类文件':'还没有文件'}</b><p>添加课堂记录并导入文件后，会自动显示在这里。</p><button class="secondary" onclick="go('home')">返回首页</button></div>`}</div>`;
+  };
+
   const oldMine = views.mine;
-  views.mine = () => state.logged ? oldMine().replace('onclick="logout()"', 'onclick="logoutV3()"') : `<div class="guest-mine"><div class="guest-mine-content"><div class="guest-avatar">芋</div><h1>登录后使用完整功能</h1><p>同步课程、笔记与录音卡状态，换设备也能继续学习。</p></div><div class="guest-mine-actions"><button class="primary wide" onclick="go('login')">微信快捷登录</button><button class="ghost-button wide" onclick="go('sample')">体验示例课程</button></div></div>`;
+  views.mine = () => state.logged ? oldMine().replace('onclick="logout()"', 'onclick="logoutV3()"').replace('？ 帮助与反馈', icon('support') + '帮助与反馈').replace(/<div class="menu-row" onclick="go\('about'\)">.*?<\/div>/, `<div class="menu-row" role="button" tabindex="0" onclick="go('myfiles')" onkeydown="if(event.key==='Enter')go('myfiles')">${icon('folder')}我的文件<small>录音、图片与课件</small><span>›</span></div>`) : `<div class="guest-mine"><div class="guest-mine-content"><div class="guest-avatar">芋</div><h1>登录后使用完整功能</h1><p>同步课程、笔记与录音卡状态，换设备也能继续学习。</p></div><div class="guest-mine-actions"><button class="primary wide" onclick="go('login')">微信快捷登录</button><button class="ghost-button wide" onclick="go('sample')">体验示例课程</button></div></div>`;
 
   const originalAiView = views.ai;
   views.ai = () => {
@@ -742,7 +781,7 @@
   };
 
   window.goBack = function () {
-    const fallback = { sample: 'home', importaudio: 'capture', importmaterial: 'capture', materialsource: 'notes', recordingdetail: 'device', notifications: 'home', edit: 'notes', transcript: 'notes', notes: 'lesson', review: 'lesson', keypoints: 'mine', favorites: 'mine', exam: 'review', results: 'lesson', transfer: 'recordingdetail', clip: 'capture', processing: 'home', capture: 'home', device: v2DeviceSource || 'home', lesson: route === 'lesson' && !state.logged ? 'sample' : 'course', course: 'home', account: 'mine', bindphone: 'account', settings: 'mine', help: 'mine', feedback: 'help', about: 'mine', policy: state.logged ? 'about' : 'login', privacy: state.logged ? 'about' : 'login', login: 'home' };
+    const fallback = { myfiles: 'mine', sample: 'home', importaudio: 'capture', importmaterial: 'capture', materialsource: 'notes', recordingdetail: 'device', notifications: 'home', edit: 'notes', transcript: 'notes', notes: 'lesson', review: 'lesson', keypoints: 'mine', favorites: 'mine', exam: 'review', results: 'lesson', transfer: 'recordingdetail', clip: 'capture', processing: 'home', capture: 'home', device: v2DeviceSource || 'home', lesson: route === 'lesson' && !state.logged ? 'sample' : 'course', course: 'home', account: 'mine', bindphone: 'account', settings: 'mine', help: 'mine', feedback: 'help', about: 'mine', policy: state.logged ? 'about' : 'login', privacy: state.logged ? 'about' : 'login', login: 'home' };
     goWithoutHistory(historyStack.pop() || fallback[route] || 'home');
   };
 
@@ -772,6 +811,7 @@
   };
 
   v3EnsureRuntimeState();
+  if (window.__yuniInitialHash === 'myfiles') route = 'myfiles';
   if (state.logged && route === 'login' && !loginPreviewMode) route = 'home';
   render();
 })();
