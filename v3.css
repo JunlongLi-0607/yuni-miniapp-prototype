@@ -82,3 +82,8 @@
 .account-save-actions{margin-top:auto;padding-top:24px}
 .account-avatar-card:focus-visible{outline:2px solid var(--green);outline-offset:3px}
 .generation-confirm{margin-top:18px}
+
+/* Center a consistent book icon in homepage course cards. */
+.course-main>.course-book-cover{display:grid;place-items:center;flex-shrink:0;background:#e4efe3;color:var(--green)}
+.course-main>.course-book-cover>.icon{display:block;width:26px;height:26px;margin:0;color:var(--green)}
+.course-main>.course-book-cover>.icon svg{display:block;width:100%;height:100%}
