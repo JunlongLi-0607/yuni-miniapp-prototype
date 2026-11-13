@@ -34,3 +34,20 @@
 #screen:has(> .sample-hero)>*{flex-shrink:0}
 #screen:has(> .sample-hero)>.primary{margin-top:auto}
 #screen:has(> .sample-hero)>.ghost-button{margin-top:8px}
+
+/* Audio source card at the bottom of structured notes. */
+#screen:has(> .notes-v3-head){display:flex;flex-direction:column}
+#screen:has(> .notes-v3-head)>*{flex-shrink:0}
+.note-source-footer{margin-top:auto;padding-top:16px}
+.note-source-card{padding:18px 16px 4px;background:#fff;border:1px solid var(--line);border-radius:18px}
+.note-source-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:13px;border-bottom:1px solid var(--line)}
+.note-source-heading b{font-size:14px;color:var(--ink)}
+.note-source-heading>span{font-size:11px;color:var(--muted)}
+.note-source-file{display:flex;align-items:center;gap:12px;width:100%;padding:15px 0;background:transparent;text-align:left;color:var(--ink)}
+.note-source-icon{display:grid;place-items:center;width:44px;height:48px;flex:0 0 44px;border-radius:13px;background:#e4f0e8;color:var(--green)}
+.note-source-icon .icon{width:23px;height:23px}
+.note-source-info{display:grid;gap:5px;flex:1;min-width:0}
+.note-source-info b{font-size:12px;line-height:1.5;overflow-wrap:anywhere}
+.note-source-info small{font-size:10px;color:var(--muted)}
+.note-source-view{flex-shrink:0;color:var(--green);font-size:12px;font-weight:600}
+.note-source-file:focus-visible{outline:2px solid var(--green);outline-offset:3px;border-radius:8px}
